@@ -205,14 +205,14 @@ def load_data():
                     continue
         
         if df is None:
-            st.error(f"❌ Aucun fichier de données trouvé. Cherché: {', '.join(possible_files)}")
-            st.info("📁 Assurez-vous qu'un fichier CSV avec les colonnes 'review' et 'sentiment' soit présent.")
+            st.error(f"Aucun fichier de données trouvé. Cherché: {', '.join(possible_files)}")
+            st.info("Assurez-vous qu'un fichier CSV avec les colonnes 'review' et 'sentiment' soit présent.")
             return None
             
         # Vérifier les colonnes
         required_cols = ['review', 'sentiment']
         if not all(col in df.columns for col in required_cols):
-            st.error(f"❌ Colonnes manquantes. Trouvé: {list(df.columns)}, Requis: {required_cols}")
+            st.error(f"Colonnes manquantes. Trouvé: {list(df.columns)}, Requis: {required_cols}")
             return None
         
         # Nettoyage initial
@@ -223,13 +223,13 @@ def load_data():
         # Limiter la taille pour les performances
         if len(df) > MAX_SAMPLES:
             df = df.sample(n=MAX_SAMPLES, random_state=RANDOM_STATE)
-            st.info(f"📊 Dataset limité à {MAX_SAMPLES} échantillons pour optimiser les performances")
+            st.info(f"Dataset limité à {MAX_SAMPLES} échantillons pour optimiser les performances")
         
-        st.success(f"✅ Données chargées: {len(df)} échantillons depuis '{loaded_file}'")
+        st.success(f"Données chargées: {len(df)} échantillons depuis '{loaded_file}'")
         return df
         
     except Exception as e:
-        st.error(f"❌ Erreur lors du chargement: {str(e)}")
+        st.error(f"Erreur lors du chargement: {str(e)}")
         return None
 
 @st.cache_data(show_spinner=False)
@@ -255,7 +255,7 @@ def prepare_data(_df):
         return X_train, X_test, y_train, y_test, {'vocab': vocab, 'idf': idf, 'le': le}
         
     except Exception as e:
-        st.error(f"❌ Erreur lors de la préparation des données: {str(e)}")
+        st.error(f"Erreur lors de la préparation des données: {str(e)}")
         return None, None, None, None, None
 
 # ===== FONCTIONS DE VISUALISATION =====
@@ -384,29 +384,29 @@ def predict_sentiment(text, model, preprocessor):
 # ===== INTERFACE PRINCIPALE =====
 def main():
     # En-tête
-    st.markdown('<h1 class="main-header">🎬 Analyse de Sentiment - Avis de Films</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-header">👨‍💻 Développé par Messanh Yaovi KODJO</p>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header"> Analyse de Sentiment - Avis de Films</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-header"> Développé par Messanh Yaovi KODJO</p>', unsafe_allow_html=True)
     
     # Chargement des données
-    with st.spinner("📂 Chargement des données..."):
+    with st.spinner("Chargement des données..."):
         df = load_data()
     
     if df is None:
         st.stop()
     
     # Sidebar - Affichage des données
-    if st.sidebar.checkbox("👀 Afficher les données"):
-        st.subheader("📊 Aperçu des données")
+    if st.sidebar.checkbox("Afficher les données"):
+        st.subheader("Aperçu des données")
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("📝 Total", len(df))
+            st.metric("Total", len(df))
         with col2:
             pos_count = (df['sentiment'] == 'positive').sum()
-            st.metric("😊 Positifs", pos_count)
+            st.metric("Positifs", pos_count)
         with col3:
             neg_count = (df['sentiment'] == 'negative').sum()
-            st.metric("😞 Négatifs", neg_count)
+            st.metric("Négatifs", neg_count)
         
         # Échantillon des données
         sample_df = df.sample(min(10, len(df)), random_state=RANDOM_STATE)
@@ -447,20 +447,20 @@ def main():
     )
     
     # Bouton d'entraînement
-    if st.sidebar.button("🚀 Entraîner le modèle", type="primary"):
+    if st.sidebar.button("Entraîner le modèle", type="primary"):
         
         # Préparation des données
-        with st.spinner("🔧 Préparation des données..."):
+        with st.spinner("Préparation des données..."):
             data_result = prepare_data(df)
         
         if data_result[0] is None:
-            st.error("❌ Erreur lors de la préparation des données")
+            st.error("Erreur lors de la préparation des données")
             st.stop()
         
         X_train, X_test, y_train, y_test, preprocessor = data_result
         
         # Configuration du modèle
-        with st.spinner("🏋️ Entraînement en cours..."):
+        with st.spinner("Entraînement en cours..."):
             try:
                 if model_type == "Logistic Regression":
                     model = LogisticRegression(
@@ -495,27 +495,27 @@ def main():
                 st.session_state['y_pred'] = y_pred
                 st.session_state['y_proba'] = y_proba
                 
-                st.success(f"✅ Modèle entraîné avec succès! Précision: {accuracy:.3f}")
+                st.success(f"Modèle entraîné avec succès! Précision: {accuracy:.3f}")
                 
             except Exception as e:
-                st.error(f"❌ Erreur lors de l'entraînement: {str(e)}")
+                st.error(f"Erreur lors de l'entraînement: {str(e)}")
                 st.stop()
     
     # Affichage des résultats
     if 'model' in st.session_state:
-        st.header("📊 Résultats du Modèle")
+        st.header("Résultats du Modèle")
         
         # Métriques principales
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("🎯 Précision", f"{st.session_state['accuracy']:.3f}")
+            st.metric("Précision", f"{st.session_state['accuracy']:.3f}")
         with col2:
-            st.metric("📊 Échantillons test", len(st.session_state['y_test']))
+            st.metric("Échantillons test", len(st.session_state['y_test']))
         with col3:
-            st.metric("🤖 Modèle", model_type)
+            st.metric("Modèle", model_type)
         
         # Rapport détaillé
-        with st.expander("📋 Rapport de classification détaillé"):
+        with st.expander("Rapport de classification détaillé"):
             class_names = st.session_state['preprocessor']['le'].classes_
             report = classification_report(
                 st.session_state['y_test'], 
@@ -526,7 +526,7 @@ def main():
         
         # Visualisations
         if show_metrics:
-            st.subheader("📈 Visualisations")
+            st.subheader("Visualisations")
             
             cols = st.columns(len(show_metrics))
             class_names = st.session_state['preprocessor']['le'].classes_
@@ -556,15 +556,15 @@ def main():
                         st.plotly_chart(fig, use_container_width=True)
     
     # Section de prédiction
-    st.header("🔮 Prédiction de Sentiment")
+    st.header("Prédiction de Sentiment")
     
     if 'model' not in st.session_state:
-        st.warning("⚠️ Veuillez d'abord entraîner un modèle!")
-        st.info("👆 Utilisez la configuration dans la barre latérale")
+        st.warning("Veuillez d'abord entraîner un modèle!")
+        st.info("Utilisez la configuration dans la barre latérale")
     else:
         # Interface de prédiction
         user_text = st.text_area(
-            "✍️ Entrez votre avis de film:",
+            "Entrez votre avis de film:",
             placeholder="Ex: This movie was absolutely fantastic! Great acting and amazing plot...",
             height=100
         )
@@ -574,7 +574,7 @@ def main():
             predict_btn = st.button("🔮 Analyser", type="primary")
         
         if predict_btn and user_text.strip():
-            with st.spinner("🤔 Analyse en cours..."):
+            with st.spinner("Analyse en cours..."):
                 sentiment, probabilities = predict_sentiment(
                     user_text,
                     st.session_state['model'],
@@ -584,10 +584,10 @@ def main():
             if sentiment:
                 # Affichage du résultat
                 if sentiment.lower() == 'positive':
-                    st.success(f"😊 **Sentiment: {sentiment.upper()}**")
+                    st.success(f"**Sentiment: {sentiment.upper()}**")
                     st.balloons()
                 else:
-                    st.error(f"😞 **Sentiment: {sentiment.upper()}**")
+                    st.error(f"**Sentiment: {sentiment.upper()}**")
                 
                 # Probabilités
                 if probabilities is not None:
@@ -616,43 +616,43 @@ def main():
                     )
                     st.plotly_chart(fig, use_container_width=True)
             else:
-                st.warning("⚠️ Impossible d'analyser ce texte. Essayez avec un texte plus long.")
+                st.warning("Impossible d'analyser ce texte. Essayez avec un texte plus long.")
         
         elif predict_btn:
-            st.warning("⚠️ Veuillez entrer un texte à analyser!")
+            st.warning("Veuillez entrer un texte à analyser!")
     
     # Section d'aide
-    with st.expander("ℹ️ Guide d'utilisation"):
+    with st.expander("Guide d'utilisation"):
         st.markdown("""
-        ### 🚀 Comment utiliser cette application:
+        ### Comment utiliser cette application:
         
-        1. **📊 Explorer les données** (optionnel):
+        1. ** Explorer les données** (optionnel):
            - Cochez "Afficher les données" dans la barre latérale
            - Consultez les statistiques et la distribution
         
-        2. **⚙️ Configurer le modèle**:
+        2. ** Configurer le modèle**:
            - Choisissez l'algorithme (Logistic Regression ou Random Forest)
            - Ajustez les hyperparamètres selon vos besoins
            - Sélectionnez les métriques à visualiser
         
-        3. **🚀 Entraîner**:
+        3. ** Entraîner**:
            - Cliquez sur "Entraîner le modèle"
            - Attendez la fin de l'entraînement
            - Consultez les résultats et visualisations
         
-        4. **🔮 Prédire**:
+        4. ** Prédire**:
            - Entrez votre propre avis de film
            - Cliquez sur "Analyser"
            - Obtenez le sentiment prédit avec les probabilités
         
-        ### 🔧 Fonctionnalités techniques:
+        ###  Fonctionnalités techniques:
         - **Preprocessing**: Nettoyage automatique du texte
         - **Vectorisation**: TF-IDF avec unigrammes et bigrammes  
         - **Modèles**: Logistic Regression et Random Forest
         - **Métriques**: Accuracy, Précision, Rappel, F1-Score
         - **Visualisations**: Matrice de confusion, Courbes ROC et PR
         
-        ### ⚡ Optimisations:
+        ###  Optimisations:
         - Mise en cache pour des performances optimales
         - Interface responsive avec Plotly
         - Gestion robuste des erreurs
